@@ -1,31 +1,35 @@
-
-import './App.css'
-import logo from './assets/logo.png'
-import DoubleDollar from './assets/DoubleDollar.png'
-
-
+import { useEffect, useState } from "react";
+import "./App.css";
+import AvailablePlayers from "./components/AvailablePlayers/AvailablePlayers";
+import Navbar from "./components/Navbar/Navbar";
+import SelectedPlayers from "./components/SelectedPlayers/SelectedPlayers";
 
 function App() {
-  
+  const [availablePlayers, setAvailablePlayers] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch("/Players.json")
+      .then((res) => res.json())
+      .then((data) => {
+        setAvailablePlayers(data);
+        setLoading(false);
+      });
+  }, []);
 
   return (
     <>
-      <div className="navbar max-w-300 mx-auto">
-        <div className="flex-1">
-          <a className=" text-xl">
-            <img src={logo} alt="Logo" className="h-10 w-10 mr-2" />
-            {/* my-XI */}
-          </a>
-        </div>
-        <div className="flex items-center mr-1">
-          <span className='mr-1' >60000000000</span>
-          <span className=' mr-1 ' >Coin</span>
-          <img src={DoubleDollar} alt="Double Dollar" className="h-6 w-6 ml-2" />
-        </div>
-      </div>
-      
+      <Navbar />
+
+      {loading ? (
+        <div className="text-center py-10"><span className="loading loading-spinner text-info"></span></div>
+      ) : (
+        <AvailablePlayers availablePlayers={availablePlayers} />
+      )}
+
+      <SelectedPlayers />
     </>
-  )
+  );
 }
 
-export default App
+export default App;
